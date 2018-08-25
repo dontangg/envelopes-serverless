@@ -1,0 +1,4 @@
+#!/bin/sh
+set -x
+
+aws s3 sync client/dist s3://envelopes.thewilsonpad.com/ --delete
