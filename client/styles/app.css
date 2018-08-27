@@ -1,6 +1,16 @@
-.App {
-	margin: 1rem;
-	font-family: Helvetica, Arial, sans-serif;
-}
 
-/* @import './other.css'; */
+@import './bootstrap.css';
+
+/*
+.navbar-collapse {
+	transition: height 0.5s;
+	-webkit-transition: height 0.5s;
+}
+.navbar-collapse {
+	height: 0;
+}
+.navbar-collapse.show {
+	height: 100px;
+}
+	collapsing
+*/
