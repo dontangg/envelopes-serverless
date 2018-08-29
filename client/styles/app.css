@@ -1,16 +1,6 @@
 
 @import './bootstrap.css';
 
-/*
-.navbar-collapse {
-	transition: height 0.5s;
-	-webkit-transition: height 0.5s;
+a {
+	color: #6d9c00;
 }
-.navbar-collapse {
-	height: 0;
-}
-.navbar-collapse.show {
-	height: 100px;
-}
-	collapsing
-*/
