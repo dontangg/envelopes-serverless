@@ -138,12 +138,12 @@ class AccountPage extends Component {
 										<div className="col-sm-3">
 											<input onChange={this.onChangeQuestion(index, 'answer')} type="text" name={`answer[${index}]`} value={qa.answer} placeholder="Answer" className="form-control" />
 										</div>
-										<button onClick={this.onRemoveQuestion(index)} className="destroy btn btn-link" title="Remove this question and its answer"><span className="glyphicon glyphicon-trash"></span></button>
+										<button onClick={this.onRemoveQuestion(index)} className="btn btn-link" title="Remove this question and its answer"><span className="fas fa-trash"></span></button>
 									</div>
 								);
 							})}
 
-							<button onClick={this.onAddSecretQuestion} type="button" className="btn btn-secondary"><span className="glyphicon glyphicon-plus"></span> New Question</button>
+							<button onClick={this.onAddSecretQuestion} type="button" className="btn btn-secondary"><span className="fas fa-plus"></span> New Question</button>
 						</div>
 
 
