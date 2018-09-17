@@ -3,7 +3,6 @@ class Router {
 		this.handlers = {
 			"GET": [],
 			"POST": [],
-			"404": (req, callback) => callback(null, { statusCode: 404, body: 'Not Found' }),
 		};
 	}
 
@@ -15,11 +14,7 @@ class Router {
 		this.handlers["POST"].push({routePath, handler});
 	}
 
-	notFound(handler) {
-		this.handlers["404"] = handler;
-	}
-
-	run(method, path, body, callback) {
+	async run(method, path, body) {
 
 		let req = { path };
 		if (body) req.body = body;
@@ -40,12 +35,11 @@ class Router {
 				}
 
 				req.routeParams = routeParams;
-				handler(req, callback);
-				return;
+				return handler(req);
 			}
 		}
 
-		this.handlers["404"](req, callback);
+		return { statusCode: 404, body: 'Not Found' };
 	}
 }
 

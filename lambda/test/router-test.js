@@ -8,22 +8,23 @@ describe('Router', function() {
 	});
 
 	describe('#get()', function() {
-		it('should register a GET route that gets called with the appropriate URL', function(done) {
+		it('should register a GET route that gets called with the appropriate URL', async function() {
 			const userId = 10;
-			router.get('/user/:id', (req, callback) => {
+			const responseBody = 'get a user';
+
+			router.get('/user/:id', (req) => {
 				assert.equal(req.routeParams.id, userId);
-				callback();
+				return { body: responseBody};
 			});
-			router.run('GET', `/user/${userId}`, null, done);
+			let response = await router.run('GET', `/user/${userId}`, null);
+			assert.equal(response.body, responseBody);
 		});
 	});
 
-	describe('#notFound()', function() {
-		it('should handle unregistered routes', function(done) {
-			router.notFound((req, callback) => {
-				callback();
-			});
-			router.run('GET', '/non-supported-url', null, done);
+	describe('404', function() {
+		it('should handle unregistered routes', async function() {
+			let response = await router.run('GET', '/non-supported-url', null);
+			assert.equal(response.statusCode, 404);
 		});
 	});
 });
