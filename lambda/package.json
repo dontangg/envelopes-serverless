@@ -1,0 +1,19 @@
+{
+  "name": "envelopes-lambda",
+  "version": "1.0.0",
+  "description": "The code running in AWS lambda",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Don Wilson",
+  "contributors": [
+    {
+      "name": "Reed Wilson"
+    }
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  }
+}

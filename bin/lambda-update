@@ -4,9 +4,9 @@ set -x
 # Zip up all the files
 ZIP_FILE=lambda.zip
 rm -f ${ZIP_FILE}
-cd lambda
-zip -r ../${ZIP_FILE} .
-cd ..
+cd lambda/src
+zip -r ../../${ZIP_FILE} .
+cd ../..
 
 # Update the lambda
 aws lambda update-function-code --function-name envelopes --zip-file fileb://${ZIP_FILE}
