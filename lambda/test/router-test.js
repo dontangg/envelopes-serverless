@@ -1,5 +1,7 @@
-var assert = require('assert');
-var Router = require('../src/router');
+'use strict';
+
+let assert = require('assert');
+let Router = require('../src/router');
 
 describe('Router', function() {
 	let router;
