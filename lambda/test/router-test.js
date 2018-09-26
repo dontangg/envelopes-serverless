@@ -18,14 +18,14 @@ describe('Router', function() {
 				assert.equal(req.routeParams.id, userId);
 				return { body: responseBody};
 			});
-			let response = await router.run('GET', `/user/${userId}`, null);
+			let response = await router.run({ method: 'GET', path: `/user/${userId}` });
 			assert.equal(response.body, responseBody);
 		});
 	});
 
 	describe('404', function() {
 		it('should handle unregistered routes', async function() {
-			let response = await router.run('GET', '/non-supported-url', null);
+			let response = await router.run({ method: 'GET', path: '/non-supported-url' });
 			assert.equal(response.statusCode, 404);
 		});
 	});

@@ -16,19 +16,16 @@ class Router {
 		this.handlers["POST"].push({routePath, handler});
 	}
 
-	async run(method, path, body) {
+	async run(req) {
 
-		let req = { path };
-		if (body) req.body = body;
-
-		for (let i = 0; i < this.handlers[method].length; i++) {
-			let {routePath, handler} = this.handlers[method][i];
+		for (let i = 0; i < this.handlers[req.method].length; i++) {
+			let {routePath, handler} = this.handlers[req.method][i];
 
 			// Named groups are not supported in node.js 8, but they are in 10
-			//let matchInfo = new RegExp(routePath.replace(/:([^/]+)/g, "(?<$1>[^/]+)")).exec(path);
+			//let matchInfo = new RegExp(routePath.replace(/:([^/]+)/g, "(?<$1>[^/]+)")).exec(req.path);
 			//'/user/1234/test/44/qwerty'.match(new RegExp('/user/:id/test/:id2'.replace(/:[^/]+/g, '([^/?]+)') + '(?:\\?|$)'))
 
-			let requestMatches = path.match(new RegExp(routePath.replace(/:[^/]+/g, '([^/?]+)') + '(?:\\?|$)'));
+			let requestMatches = req.path.match(new RegExp(routePath.replace(/:[^/]+/g, '([^/?]+)') + '(?:\\?|$)'));
 			if (requestMatches) {
 				let routeParams = {};
 
@@ -45,7 +42,7 @@ class Router {
 			}
 		}
 
-		return { statusCode: 404, body: 'Not Found' };
+		return { statusCode: 404, body: JSON.stringify({ 'message': 'Not Found' }) };
 	}
 }
 

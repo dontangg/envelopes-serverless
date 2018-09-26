@@ -41,7 +41,7 @@ class UserController {
 
 
 	static async getUser(req) {
-		let user = await db.User.get(req.routeParams.id);
+		let user = await db.User.get(req.userId);
 
 		if (!user) {
 			return { statusCode: 404 };
@@ -56,6 +56,7 @@ class UserController {
 
 	static async saveUser(req) {
 		let user = JSON.parse(req.body);
+		user.id = req.userId;
 
 		if (user.password) {
 			user.passwordSalt = cryptoHelper.generatePasswordSalt();
