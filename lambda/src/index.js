@@ -28,9 +28,18 @@ exports.handler = async function(event, context, callback) {
 	if (event.body) req.body = event.body;
 
 	cookieParser(req);
+
+	let response = null;
 	if (!authorizer(req)) {
-		return { statusCode: 401, body: JSON.stringify({ 'message': 'Unauthorized' }) };
+		response = { statusCode: 401, body: JSON.stringify({ 'message': 'Unauthorized' }) };
+	} else {
+		response = await router.run(req);
 	}
 
-	return router.run(req);
+	if (!response.headers)
+		response.headers = {};
+	response.headers['Access-Control-Allow-Origin'] = 'http://envelopes.thewilsonpad.com';
+	response.headers['Access-Control-Allow-Credentials'] = 'true';
+
+	return response;
 };
