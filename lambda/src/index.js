@@ -12,7 +12,7 @@ router.post('/user', UserController.saveUser);
 router.post('/sign_in', UserController.signIn);
 router.post('/sign_out', UserController.signOut);
 
-exports.handler = async function(event, context, callback) {
+exports.handler = async function(event, context) {
 	context.callbackWaitsForEmptyEventLoop = false;
 
 	console.log(`${event.httpMethod} ${event.path}`);
