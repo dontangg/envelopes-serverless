@@ -1,83 +1,28 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { changeAccountField, addAccountQuestion, changeAccountQuestion, removeAccountQuestion, saveAccount } from '../actions';
 
 class AccountPage extends Component {
-	state = {
-		email: 'myemail@gmail.com',
-		bank: 'zions_bank',
-		bankUsername: 'MyUsername',
-		bankAccountId: 'MyAccountId',
-		bankSecretQuestions: [
-			{ question: 'What is your hair color?', answer: 'Fulvous' },
-		],
-		password: '',
-		passwordConfirm: '',
-		passwordIsValid: true,
-	};
-
-	onChangeBank = (e) => {
-		this.setState({
-			bank: e.target.value
-		});
-	};
 
 	onChangeTextField = (fieldName) => {
 		return (e) => {
-			this.state[fieldName] = e.target.value;
-			this.setState(this.state);
+			this.props.onFieldChange(fieldName, e.target.value);
 		};
-	};
-
-	onAddSecretQuestion = (e) => {
-		e.preventDefault();
-		this.state.bankSecretQuestions.push({ question: '', answer: '' });
-		this.setState({
-			bankSecretQuestions: this.state.bankSecretQuestions
-		});
 	};
 
 	onRemoveQuestion = (index) => {
 		return (e) => {
 			e.preventDefault();
-			this.state.bankSecretQuestions.splice(index, 1);
-			this.setState({
-				bankSecretQuestions: this.state.bankSecretQuestions
-			});
-		};
-	};
-
-	onChangeQuestion = (index, fieldName) => {
-		return (e) => {
-			this.state.bankSecretQuestions[index][fieldName] = e.target.value;
-			this.setState({
-				bankSecretQuestions: this.state.bankSecretQuestions
-			});
+			this.props.onRemoveQuestion(index);
 		};
 	};
 
 	save = (e) => {
 		e.preventDefault();
-
-		const { password, passwordConfirm } = this.state;
-		let allowSave = true;
-		let passwordIsValid = true;
-
-		if (password !== passwordConfirm) {
-			allowSave = false;
-			passwordIsValid = false;
-		}
-
-		this.setState({
-			passwordIsValid
-		});
-
-		if (allowSave) {
-			// Save the stuff
-		}
-
+		this.props.onSaveAccount();
 	}
 
 	render() {
-		let account = this.state;
 
 		return (
 			<main className="container-fluid">
@@ -88,13 +33,13 @@ class AccountPage extends Component {
 					<div className="form-group row">
 						<label htmlFor="inputEmail" className="col-sm-2 col-form-label">Email</label>
 						<div className="col-sm-3">
-							<input onChange={this.onChangeTextField('email')} type="email" className="form-control" id="inputEmail" placeholder="email" value={account.email} />
+							<input onChange={(e) => { this.props.onFieldChange('email', e.target.value); }} type="email" className="form-control" id="inputEmail" placeholder="email" value={this.props.email} />
 						</div>
 					</div>
 					<div className="form-group row">
 						<label htmlFor="inputPassword" className="col-sm-2 col-form-label">Password</label>
 						<div className="col-sm-3">
-							<input onChange={this.onChangeTextField('password')} value={account.password} type="password" className={`form-control ${account.passwordIsValid ? '' : 'is-invalid'}`} id="inputPassword" placeholder="password" />
+							<input onChange={(e) => { this.props.onFieldChange('password', e.target.value); }} value={this.props.password} type="password" className={`form-control ${this.props.passwordIsValid ? '' : 'is-invalid'}`} id="inputPassword" placeholder="password" />
 							<small className="form-text text-muted">
 								Passwords left blank will not be modified.
 							</small>
@@ -103,7 +48,7 @@ class AccountPage extends Component {
 					<div className="form-group row">
 						<label htmlFor="inputConfirmPassword" className="col-sm-2 col-form-label">Confirm password</label>
 						<div className="col-sm-3">
-							<input onChange={this.onChangeTextField('passwordConfirm')} value={account.passwordConfirm} type="password" className={`form-control ${account.passwordIsValid ? '' : 'is-invalid'}`} id="inputConfirmPassword" placeholder="password" />
+							<input onChange={(e) => { this.props.onFieldChange('passwordConfirm', e.target.value); }} value={this.props.passwordConfirm} type="password" className={`form-control ${this.props.passwordIsValid ? '' : 'is-invalid'}`} id="inputConfirmPassword" placeholder="password" />
 							<div className="invalid-feedback">
 								Passwords don't match
 							</div>
@@ -112,7 +57,7 @@ class AccountPage extends Component {
 					<div className="form-group row">
 						<label htmlFor="selectBank" className="col-sm-2 col-form-label">Bank</label>
 						<div className="col-sm-3">
-							<select onChange={this.onChangeBank} className="form-control" id="selectBank" value={account.bank}>
+							<select onChange={(e) => { this.props.onFieldChange('bank', e.target.value); }} className="form-control" id="selectBank" value={this.props.bank}>
 								<option>choose&hellip;</option>
 								<option value="zions_bank">Zions Bank</option>
 								<option value="uccu">UCCU</option>
@@ -120,30 +65,45 @@ class AccountPage extends Component {
 						</div>
 					</div>
 					<div className="form-group row">
+						<label htmlFor="inputBankUsername" className="col-sm-2 col-form-label">Bank username</label>
+						<div className="col-sm-3">
+							<input onChange={(e) => { this.props.onFieldChange('bankUsername', e.target.value); }} type="text" className="form-control" id="inputBankUsername" placeholder="bank username" value={this.props.bankUsername} />
+						</div>
+					</div>
+					<div className="form-group row">
+						<label htmlFor="inputBankPassword" className="col-sm-2 col-form-label">Bank password</label>
+						<div className="col-sm-3">
+							<input onChange={this.onChangeTextField('bankPassword')} type="password" className="form-control" id="inputBankPassword" placeholder="password" value={this.props.bankPassword} />
+							<small className="form-text text-muted">
+								Passwords left blank will not be modified.
+							</small>
+						</div>
+					</div>
+					<div className="form-group row">
 						<label htmlFor="inputBankAccountId" className="col-sm-2 col-form-label">Bank account ID</label>
 						<div className="col-sm-3">
-							<input onChange={this.onChangeTextField('bankAccountId')} type="text" className="form-control" id="inputBankAccountId" placeholder="bank account id" value={account.bankAccountId} />
+							<input onChange={(e) => { this.props.onFieldChange('bankAccountId', e.target.value); }} type="text" className="form-control" id="inputBankAccountId" placeholder="bank account id" value={this.props.bankAccountId} />
 						</div>
 					</div>
 					<div className="form-group row">
 						<label className="col-sm-2 col-form-label">Bank secret questions</label>
 
 						<div className="col-sm-10">
-							{account.bankSecretQuestions.map((qa, index) => {
+							{this.props.bankSecretQuestions.map((qa, index) => {
 								return (
 									<div key={index} className="row mb-3">
 										<div className="col-sm-4">
-											<input onChange={this.onChangeQuestion(index, 'question')} type="text" name={`question[${index}]`} value={qa.question} placeholder="Question" className="form-control" />
+											<input onChange={(e) => this.props.onChangeQuestion(index, 'question', e.target.value)} type="text" name={`question[${index}]`} value={qa.question} placeholder="Question" className="form-control" />
 										</div>
 										<div className="col-sm-3">
-											<input onChange={this.onChangeQuestion(index, 'answer')} type="text" name={`answer[${index}]`} value={qa.answer} placeholder="Answer" className="form-control" />
+											<input onChange={(e) => this.props.onChangeQuestion(index, 'answer', e.target.value)} type="text" name={`answer[${index}]`} value={qa.answer} placeholder="Answer" className="form-control" />
 										</div>
 										<button onClick={this.onRemoveQuestion(index)} className="btn btn-link" title="Remove this question and its answer"><span className="fas fa-trash"></span></button>
 									</div>
 								);
 							})}
 
-							<button onClick={this.onAddSecretQuestion} type="button" className="btn btn-secondary"><span className="fas fa-plus"></span> New Question</button>
+							<button onClick={() => this.props.onAddQuestion()} type="button" className="btn btn-secondary"><span className="fas fa-plus"></span> New Question</button>
 						</div>
 
 
@@ -155,4 +115,26 @@ class AccountPage extends Component {
 	}
 }
 
-export default AccountPage;
+/*
+AccountPage.propTypes = {
+	account: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.number.isRequired,
+			completed: PropTypes.bool.isRequired,
+			text: PropTypes.string.isRequired
+		}).isRequired
+	).isRequired,
+	onTodoClick: PropTypes.func.isRequired
+};
+*/
+
+export default connect(
+	state => ({ ...state.account }),
+	dispatch => ({
+		onFieldChange: (fieldName, value) => { dispatch(changeAccountField(fieldName, value)) },
+		onAddQuestion: () => { dispatch(addAccountQuestion()) },
+		onRemoveQuestion: (index) => { dispatch(removeAccountQuestion(index)) },
+		onChangeQuestion: (index, fieldName, value) => { dispatch(changeAccountQuestion(index, fieldName, value)) },
+		onSaveAccount: () => { dispatch(saveAccount()) },
+	})
+)(AccountPage);
