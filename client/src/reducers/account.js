@@ -1,4 +1,6 @@
 const initialState = {
+	isFetching: false,
+	isSaving: false,
 	email: 'NEWmyemail@gmail.com',
 	bank: 'zions_bank',
 	bankUsername: 'MyUsername',
@@ -47,9 +49,12 @@ const account = (state = initialState, action) => {
 				passwordIsValid = false;
 			}
 
-			// DO THE SAVE
+			let isSaving = false;
+			if (passwordIsValid) {
+				isSaving = true;
+			}
 
-			return { ...state, passwordIsValid };
+			return { ...state, passwordIsValid, isSaving };
 		default:
 			return state;
 	}

@@ -4,3 +4,18 @@
 a {
 	color: #6d9c00;
 }
+
+.fas-sync-animate {
+	animation: spin 1.5s infinite linear;
+}
+
+@keyframes spin {
+	from { transform: scale(1) rotate(0deg); }
+	to { transform: scale(1) rotate(360deg); }
+}
+
+.loader {
+	width: 100px;
+	height: 100px;
+	margin: 0 auto;
+}
