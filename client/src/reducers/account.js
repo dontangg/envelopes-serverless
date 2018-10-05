@@ -1,14 +1,12 @@
 const initialState = {
 	isFetching: false,
 	isSaving: false,
-	email: 'NEWmyemail@gmail.com',
-	bank: 'zions_bank',
-	bankUsername: 'MyUsername',
+	email: '',
+	bankId: '',
+	bankUsername: '',
 	bankPassword: '',
-	bankAccountId: 'MyAccountId',
-	bankSecretQuestions: [
-		{ question: 'What is your hair color?', answer: 'Fulvous' },
-	],
+	bankAccountId: '',
+	bankSecretQuestions: [], // { question: '', answer: '' },
 	password: '',
 	passwordConfirm: '',
 	passwordIsValid: true,
@@ -16,14 +14,31 @@ const initialState = {
 
 const account = (state = initialState, action) => {
 
-	let newState = {};
+	let updatedStateFields = {};
 
 	switch(action.type) {
+		case 'REQUEST_ACCOUNT':
+			return { ...state, isFetching: true };
+		case 'RECEIVE_ACCOUNT':
+			return {
+				...state,
+				...action.account,
+				isFetching: false,
+				isSaving: false,
+				bankPassword: '',
+				password: '',
+				passwordConfirm: '',
+				passwordIsValid: true,
+			};
 		case 'CHANGE_ACCOUNT_FIELD':
-			newState[action.fieldName] = action.text;
-			return { ...state, ...newState };
+			updatedStateFields[action.fieldName] = action.text;
+
+			let newState = { ...state, ...updatedStateFields };
+			newState.passwordIsValid = newState.password === newState.passwordConfirm;
+
+			return newState;
 		case 'CHANGE_ACCOUNT_QUESTION':
-			newState.bankSecretQuestions = [];
+			updatedStateFields.bankSecretQuestions = [];
 			for (let i = 0; i < state.bankSecretQuestions.length; i++) {
 				let thisQuestion = state.bankSecretQuestions[i];
 				if (i === action.index) {
@@ -31,30 +46,21 @@ const account = (state = initialState, action) => {
 					thisQuestion[action.fieldName] = action.text;
 				}
 
-				newState.bankSecretQuestions.push(thisQuestion);
+				updatedStateFields.bankSecretQuestions.push(thisQuestion);
 			}
-			return { ...state, ...newState };
+			return { ...state, ...updatedStateFields };
 		case 'ADD_ACCOUNT_QUESTION':
-			newState.bankSecretQuestions = [...state.bankSecretQuestions];
-			newState.bankSecretQuestions.push({ question:'', answer:'' });
-			return { ...state, ...newState };
+			updatedStateFields.bankSecretQuestions = [...state.bankSecretQuestions];
+			updatedStateFields.bankSecretQuestions.push({ question:'', answer:'' });
+			return { ...state, ...updatedStateFields };
 		case 'REMOVE_ACCOUNT_QUESTION':
-			newState.bankSecretQuestions = [...state.bankSecretQuestions];
-			newState.bankSecretQuestions.splice(action.index, 1);
-			return { ...state, ...newState };
-		case 'SAVE_ACCOUNT_FIELD':
-			let passwordIsValid = true;
-
-			if (state.password !== state.passwordConfirm) {
-				passwordIsValid = false;
-			}
-
-			let isSaving = false;
-			if (passwordIsValid) {
-				isSaving = true;
-			}
-
-			return { ...state, passwordIsValid, isSaving };
+			updatedStateFields.bankSecretQuestions = [...state.bankSecretQuestions];
+			updatedStateFields.bankSecretQuestions.splice(action.index, 1);
+			return { ...state, ...updatedStateFields };
+		case 'REQUEST_ACCOUNT_SAVE':
+			return { ...state, isSaving: true };
+		case 'RECEIVE_ACCOUNT_SAVE':
+			return { ...state, isSaving: false };
 		default:
 			return state;
 	}

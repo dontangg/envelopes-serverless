@@ -63,6 +63,8 @@ class UserController {
 			user.passwordDigest = await cryptoHelper.hashPassword(user.password, user.passwordSalt);
 		}
 
+		// TODO: encrypt bankPassword
+
 		await db.User.save(user);
 
 		return { statusCode: 200, body: JSON.stringify({ id: user.id }) };

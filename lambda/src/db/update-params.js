@@ -4,7 +4,8 @@ class UpdateParams {
 	constructor(tableName, key) {
 		this.tableName = tableName;
 		this.key = key;
-		this.updateExpression = '';
+		this.propertiesToSet = [];
+		this.propertiesToRemove = [];
 		this.attributeNames = {};
 		this.attributeValues = {};
 	}
@@ -17,27 +18,41 @@ class UpdateParams {
 	}
 
 	addProperty(objPropName, obj) {
+		// If the property doesn't exist, don't change it
 		if (obj[objPropName] === undefined)
 			return;
 
 		let exprPropName = '#' + objPropName;
-		let exprValueName = ':new_' + objPropName;
 
-		this.updateExpression += this.updateExpression === '' ? 'SET ' : ', ';
-		this.updateExpression += exprPropName + ' = ' + exprValueName;
 		this.attributeNames[exprPropName] = objPropName;
-		this.attributeValues[exprValueName] = obj[objPropName];
+
+		// If it exists, but it is null or empty string, remove it; otherwise update it
+		if (obj[objPropName]) {
+			let exprValueName = ':new_' + objPropName;
+			this.propertiesToSet.push(exprPropName + ' = ' + exprValueName);
+			this.attributeValues[exprValueName] = obj[objPropName];
+		} else {
+			this.propertiesToRemove.push(exprPropName);
+		}
 	}
 
 	isEmpty() {
-		return this.updateExpression === '';
+		return this.propertiesToSet.length === 0 && this.propertiesToRemove.length === 0;
 	}
 
 	toJson() {
+		let updateExpression = '';
+		if (this.propertiesToSet.length > 0)
+			updateExpression = 'SET ' + this.propertiesToSet.join(', ');
+		if (this.propertiesToRemove.length > 0) {
+			if (updateExpression !== '')
+				updateExpression += ' ';
+			updateExpression += 'REMOVE ' + this.propertiesToRemove.join(', ');
+		}
 		return {
 			TableName: this.tableName,
 			Key: this.key,
-			UpdateExpression: this.updateExpression,
+			UpdateExpression: updateExpression,
 			ExpressionAttributeNames: this.attributeNames,
 			ExpressionAttributeValues: this.attributeValues,
 		};

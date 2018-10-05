@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { changeAccountField, addAccountQuestion, changeAccountQuestion, removeAccountQuestion, saveAccount } from '../actions';
+import { fetchAccount, changeAccountField, addAccountQuestion, changeAccountQuestion, removeAccountQuestion, saveAccount } from '../actions';
 import Loader from "../components/Loader";
 
 class AccountPage extends Component {
+
+	componentDidMount() {
+		this.props.onDidMount();
+	}
 
 	onChangeTextField = (fieldName) => {
 		return (e) => {
@@ -64,7 +68,7 @@ class AccountPage extends Component {
 				<div className="form-group row">
 					<label htmlFor="selectBank" className="col-sm-2 col-form-label">Bank</label>
 					<div className="col-sm-3">
-						<select onChange={(e) => { this.props.onFieldChange('bank', e.target.value); }} className="form-control" id="selectBank" value={this.props.bank}>
+						<select onChange={(e) => { this.props.onFieldChange('bankId', e.target.value); }} className="form-control" id="selectBank" value={this.props.bankId}>
 							<option>choose&hellip;</option>
 							<option value="zions_bank">Zions Bank</option>
 							<option value="uccu">UCCU</option>
@@ -142,6 +146,7 @@ AccountPage.propTypes = {
 export default connect(
 	state => state.account,
 	dispatch => ({
+		onDidMount: () => { dispatch(fetchAccount()) },
 		onFieldChange: (fieldName, value) => { dispatch(changeAccountField(fieldName, value)) },
 		onAddQuestion: () => { dispatch(addAccountQuestion()) },
 		onRemoveQuestion: (index) => { dispatch(removeAccountQuestion(index)) },

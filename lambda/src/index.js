@@ -36,10 +36,15 @@ exports.handler = async function(event, context) {
 		response = await router.run(req);
 	}
 
-	if (!response.headers)
-		response.headers = {};
-	response.headers['Access-Control-Allow-Origin'] = 'http://envelopes.thewilsonpad.com';
-	response.headers['Access-Control-Allow-Credentials'] = 'true';
+	if (req.headers) {
+		let origin = event.headers['Origin'] || event.headers['origin'];
+		if (origin === 'http://envelopes.thewilsonpad.com' || origin === 'http://local.int:1234') {
+			if (!response.headers)
+				response.headers = {};
+			response.headers['Access-Control-Allow-Origin'] = origin;
+			response.headers['Access-Control-Allow-Credentials'] = 'true';
+		}
+	}
 
 	return response;
 };
