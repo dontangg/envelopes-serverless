@@ -13,7 +13,7 @@ class Header extends Component {
 	render() {
 		return (
 			<nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-				<Link className="navbar-brand" to="/">Envelopes</Link>
+				<Link className="navbar-brand" to="/"><i className="far fa-envelope"></i> <span className="d-inline d-lg-none">Envelopes</span></Link>
 				<button className="navbar-toggler" type="button" onClick={this.toggleVisibleForResponsive}>
 					<span className="navbar-toggler-icon"></span>
 				</button>

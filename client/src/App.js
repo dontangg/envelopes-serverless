@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Header from "./Header";
+import Footer from "./Footer";
 import Dashboard from "./pages/Dashboard";
 import AccountPage from "./pages/AccountPage";
 import FillPage from "./pages/FillPage";
@@ -23,6 +24,8 @@ class App extends Component {
 						<Route exact path="/account" component={AccountPage} />
 						<Route exact path="/envelopes/:id" component={EnvelopePage} />
 					</Switch>
+
+					<Footer />
 				</Fragment>
 			</BrowserRouter>
 		);
