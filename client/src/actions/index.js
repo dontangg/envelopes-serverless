@@ -1,8 +1,11 @@
-// TODO: Handle fetch errors!
 // TODO: Show save success
 
 const requestAccount = () => ({
 	type: 'REQUEST_ACCOUNT',
+});
+const requestAccountFailed = (message) => ({
+	type: 'REQUEST_ACCOUNT_FAILED',
+	message,
 });
 const receiveAccount = (account) => ({
 	type: 'RECEIVE_ACCOUNT',
@@ -16,8 +19,13 @@ export const fetchAccount = () => {
 
 		dispatch(requestAccount());
 		return fetch('https://envelopesapi.thewilsonpad.com/user', { credentials: 'include' })
-			.then(response => response.json())
-			.then(json => dispatch(receiveAccount(json)));
+			.then(response => {
+				if (!response.ok) {
+					return dispatch(requestAccountFailed('Unable to retrieve account details'));
+				}
+
+				return response.json().then(json => dispatch(receiveAccount(json)));
+			});
 	};
 };
 
@@ -47,6 +55,10 @@ export const changeAccountQuestion = (index, fieldName, text) => ({
 const requestAccountSave = () => ({
 	type: 'REQUEST_ACCOUNT_SAVE',
 });
+const requestAccountSaveFailed = (message) => ({
+	type: 'REQUEST_ACCOUNT_SAVE_FAILED',
+	message,
+});
 const receiveAccountSave = () => ({
 	type: 'RECEIVE_ACCOUNT_SAVE'
 });
@@ -69,7 +81,12 @@ export const saveAccount = () => {
 
 		dispatch(requestAccountSave());
 		return fetch('https://envelopesapi.thewilsonpad.com/user', { credentials: 'include', method: 'POST', body: JSON.stringify(account) })
-			.then(response => response.json())
-			.then(() => dispatch(receiveAccountSave()));
+			.then(response => {
+				if (!response.ok) {
+					return dispatch(requestAccountSaveFailed('Unable to save account details'));
+				}
+
+				return dispatch(receiveAccountSave());
+			});
 	};
 };

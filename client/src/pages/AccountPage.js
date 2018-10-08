@@ -32,7 +32,15 @@ class AccountPage extends Component {
 			<main className="container-fluid">
 				<h1 className="display-4 py-md-3">Account</h1>
 
-				{ this.props.isFetching ? (<Loader />) : this.accountForm() }
+				{ this.props.error && (
+					<div className="alert alert-danger" role="alert">
+						{this.props.error}
+					</div>
+				) }
+
+				{ this.props.isFetching && (<Loader />) }
+
+				{ this.props.email && this.accountForm() }
 
 			</main>
 		);

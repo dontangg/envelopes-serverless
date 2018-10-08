@@ -1,4 +1,5 @@
 const initialState = {
+	error: '',
 	isFetching: false,
 	isSaving: false,
 	email: '',
@@ -16,13 +17,18 @@ const account = (state = initialState, action) => {
 
 	let updatedStateFields = {};
 
+	// console.log(action);
+
 	switch(action.type) {
 		case 'REQUEST_ACCOUNT':
 			return { ...state, isFetching: true };
+		case 'REQUEST_ACCOUNT_FAILED':
+			return { ...state, isFetching: false, error: action.message };
 		case 'RECEIVE_ACCOUNT':
 			return {
 				...state,
 				...action.account,
+				error: '',
 				isFetching: false,
 				isSaving: false,
 				bankPassword: '',
@@ -59,6 +65,8 @@ const account = (state = initialState, action) => {
 			return { ...state, ...updatedStateFields };
 		case 'REQUEST_ACCOUNT_SAVE':
 			return { ...state, isSaving: true };
+		case 'REQUEST_ACCOUNT_SAVE_FAILED':
+			return { ...state, isSaving: false, error: action.message };
 		case 'RECEIVE_ACCOUNT_SAVE':
 			return { ...state, isSaving: false };
 		default:
