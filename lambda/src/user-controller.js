@@ -63,7 +63,9 @@ class UserController {
 			user.passwordDigest = await cryptoHelper.hashPassword(user.password, user.passwordSalt);
 		}
 
-		// TODO: encrypt bankPassword
+		if (user.bankPassword) {
+			user.bankPasswordCipher = await cryptoHelper.encrypt(user.bankPassword);
+		}
 
 		await db.User.save(user);
 
